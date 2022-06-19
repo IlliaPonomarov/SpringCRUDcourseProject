@@ -1,9 +1,6 @@
 package ua.ponomarov.Model;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class Person {
 
@@ -14,6 +11,7 @@ public class Person {
     private String name;
 
     @Min(value = 0, message = "Age should be greater then 0.")
+    @Max(value = 125, message = "Age should be less then 125.")
     private int age;
 
     @NotEmpty(message = "Email shouldn\'t be empty!")
