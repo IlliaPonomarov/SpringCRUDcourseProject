@@ -27,15 +27,17 @@ public class PersonDAO {
     }
 
     public void save(Person person){
-        jdbcTemplate.update("INSERT INTO people(name, age, email) VALUES (?, ?, ?)",
+        jdbcTemplate.update("INSERT INTO people(name, age, email, address) VALUES (?, ?, ?, ?)",
                 person.getName(),
                 person.getAge(),
-                person.getEmail());
+                person.getEmail(),
+                person.getAddress());
     }
 
     public void update(int id, Person person){
 
-        jdbcTemplate.update("UPDATE people SET name=?, age=?, email=? WHERE id=?", person.getName(), person.getAge(), person.getEmail(), id);
+        jdbcTemplate.update("UPDATE people SET name=?, age=?, email=? ,address=? WHERE id=?",
+                person.getName(), person.getAge(), person.getEmail(), person.getAddress(), id);
 
     }
 
@@ -94,11 +96,17 @@ public class PersonDAO {
 
     }
 
+    public Optional<Person> showEmail(String email){
+        return jdbcTemplate.query("SELECT * FROM people WHERE email=?", new Object[]{email}, new BeanPropertyRowMapper<>(Person.class)).stream()
+        .findAny();
+    }
+
+
     public List<Person> create1000People(){
 
         List<Person> people = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
-            people.add(new Person(i, "Name", 30 , "test@gmail.com"));
+            people.add(new Person(i, "Name", 30 , "test@gmail.com", "some address"));
         }
         return people;
     }

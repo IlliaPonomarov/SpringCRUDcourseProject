@@ -18,15 +18,29 @@ public class Person {
     @Email(message = "Email should be valid!")
     private String email;
 
+    // Cтрана с большй буквы, название города с больщой буквы, индекс состоит из 6 цифр
+    @Pattern(regexp = "[A-Z]\\w+, [A-Z]\\w+, \\d{6}",
+            message = "Your address should  be in this format: Country, City, 123456")
+    private String address;
 
-    public Person(int id, String name, int age, String email) {
+
+    public Person(int id, String name, int age, String email, String address) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.email = email;
+        this.address = address;
+    }
+    public Person(){}
+
+    public String getAddress() {
+        return address;
     }
 
-    public Person(){}
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public int getId() {
         return id;
     }
