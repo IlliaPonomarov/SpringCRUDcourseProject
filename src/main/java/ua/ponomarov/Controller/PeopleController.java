@@ -45,6 +45,7 @@ public class PeopleController {
         return "redirect:/main";
     }
 
+    // Get list of all person
     @GetMapping("/all")
     public String listOfPeople(Model model){
 
@@ -61,6 +62,25 @@ public class PeopleController {
 
         return "/people/personalPageOfPerson";
     }
+
+    // Delete Person
+
+    @GetMapping("/delete")
+    public String deletePerson(Model model, @ModelAttribute("person") Person person){
+        model.addAttribute("people", personDAO.index());
+
+        return "people/deletePerson";
+    }
+
+
+    @DeleteMapping("/delete")
+    public String removePerson(@ModelAttribute("person") Person person){
+
+        personDAO.delete(person.getId());
+
+        return "redirect:/people/all";
+    }
+
 
 
 

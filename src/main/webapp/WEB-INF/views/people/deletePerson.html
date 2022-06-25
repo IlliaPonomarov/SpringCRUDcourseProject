@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Person</title>
+</head>
+<body>
+<h1><a th:href="@{/main}">Delete Person</a></h1><br/><hr/>
+
+<form th:method="DELETE" th:action="@{/people/delete}" th:object="${person}">
+
+    <label for="person">Choose Person:</label>
+    <select th:object="${person}" th:field="*{id}" id="person">
+        <option th:each="person : ${people}" th:value="${person.getId()}" th:text="${person.getFullName()}"></option>
+    </select>
+
+    <input type="submit" value="delete"/>
+</form>
+
+</body>
+</html>
