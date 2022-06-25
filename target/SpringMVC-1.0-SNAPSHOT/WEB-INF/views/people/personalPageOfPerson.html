@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Personal Page Of Person</title>
+</head>
+<body>
+<h1><a th:href="@{/main}">Personal Page Of Person</a></h1><br/><hr/>
+
+
+<h3 th:text="${person.getId()}"></h3>
+<h2 th:text="'Name: ' + ${person.getFullName()}"></h2>
+<h2 th:text="'Year of birth: ' + ${person.getYearOfBirth()}"></h2>
+
+
+
+</body>
+</html>

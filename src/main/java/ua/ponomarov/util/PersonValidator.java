@@ -1,6 +1,5 @@
 package ua.ponomarov.util;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -11,7 +10,7 @@ import ua.ponomarov.Model.Person;
 @Component
 public class PersonValidator implements Validator {
 
-    private final PersonDAO personDAO;
+    private PersonDAO personDAO;
 
     @Autowired
     public PersonValidator(PersonDAO personDAO) {
@@ -26,11 +25,10 @@ public class PersonValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
 
-        Person person =(Person) o;
+        Person person = (Person) o;
 
-        // Посмотреть
-        if (personDAO.showEmail(person.getEmail()).isPresent())
-            errors.rejectValue("email", "", "This email is already taken.");
+        if (personDAO.findByFullName(person.getFullName()).isPresent())
+            errors.rejectValue("fullName", "", "This Person already exist.");
 
     }
 }

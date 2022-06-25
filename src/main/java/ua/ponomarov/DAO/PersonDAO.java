@@ -1,18 +1,19 @@
 package ua.ponomarov.DAO;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ua.ponomarov.Model.Person;
+import ua.ponomarov.mappers.PersonRowMapper;
 
-import java.sql.*;
 import java.util.*;
 
 
 @Component
 public class PersonDAO {
+
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -21,95 +22,33 @@ public class PersonDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Person> getPeople() {
-
-        return jdbcTemplate.query("SELECT * FROM people", new BeanPropertyRowMapper<>(Person.class));
-    }
-
-    public void save(Person person){
-        jdbcTemplate.update("INSERT INTO people(name, age, email, address) VALUES (?, ?, ?, ?)",
-                person.getName(),
-                person.getAge(),
-                person.getEmail(),
-                person.getAddress());
-    }
-
-    public void update(int id, Person person){
-
-        jdbcTemplate.update("UPDATE people SET name=?, age=?, email=? ,address=? WHERE id=?",
-                person.getName(), person.getAge(), person.getEmail(), person.getAddress(), id);
-
-    }
-
-    public void delete(int id){
-        jdbcTemplate.update("DELETE FROM people WHERE id=?", id);
+    public List<Person> index(){
+        return jdbcTemplate.query("SELECT * FROM person", new PersonRowMapper());
     }
 
     public Person findById(int id){
-
-        return jdbcTemplate.query("SELECT * FROM people WHERE id=?", new Object[]{id}, new BeanPropertyRowMapper<>(Person.class))
-                .stream().findAny().orElse(null);
+        return jdbcTemplate.query("SELECT * FROM person WHERE person_id=?" , new Object[]{id}, new PersonRowMapper()).stream().findAny().orElse(null);
     }
 
-    ///////////////////
-    // TBatch Test
-    //////////////////
-
-    public void testMultiplyUpdate(){
-        List<Person> people = create1000People();
-
-        long before = System.currentTimeMillis();
-
-
-        for (Person p : people) {
-            jdbcTemplate.update("INSERT INTO people(name, age, email) VALUES?, ?, ?)", p.getName(), p.getAge(), p.getEmail());
-        }
-
-        long after = System.currentTimeMillis();
-
-        System.out.println("Time " + (after - before));
-    }
-
-    public void testBatchUpdate(){
-
-        List<Person> people = create1000People();
-
-        long before = System.currentTimeMillis();
-
-            jdbcTemplate.batchUpdate("INSERT INTO people(name ,age, email) VALUES(?, ?, ?)", new BatchPreparedStatementSetter() {
-                @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    ps.setString(1, people.get(i).getName());
-                    ps.setInt(2, people.get(i).getId());
-                    ps.setString(3, people.get(i).getEmail());
-                }
-
-                @Override
-                public int getBatchSize() {
-                    return people.size();
-                }
-            });
-
-        long after = System.currentTimeMillis();
-
-        System.out.println("Time: " + (after - before));
-
-    }
-
-    public Optional<Person> showEmail(String email){
-        return jdbcTemplate.query("SELECT * FROM people WHERE email=?", new Object[]{email}, new BeanPropertyRowMapper<>(Person.class)).stream()
-        .findAny();
+    public Optional<Person> findByFullName(String fullName){
+        return jdbcTemplate.query("SELECT * FROM Person WHERE full_name=?",
+                new Object[]{fullName},
+                new BeanPropertyRowMapper<>(Person.class))
+                .stream()
+                .findAny();
     }
 
 
-    public List<Person> create1000People(){
-
-        List<Person> people = new ArrayList<>();
-        for (int i = 0; i < 1000; i++) {
-            people.add(new Person(i, "Name", 30 , "test@gmail.com", "some address"));
-        }
-        return people;
+    public void save(Person person){
+        jdbcTemplate.update("INSERT INTO person(full_name, year_of_birth) VALUES (?, ?)",
+                person.getFullName(), person.getYearOfBirth());
     }
+
+    public void update(Person person, int id){
+        jdbcTemplate.update("UPDATE person SET full_name=?, year_of_bith=? WHERE person_id=?", person.getFullName(), person.getYearOfBirth(), id);
+    }
+
+
 
 
 
