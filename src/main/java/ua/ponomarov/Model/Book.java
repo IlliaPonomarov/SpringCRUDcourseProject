@@ -29,7 +29,7 @@ public class Book {
     private int year;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn( name = "person_id",
             referencedColumnName = "person_id")
     private Person person;

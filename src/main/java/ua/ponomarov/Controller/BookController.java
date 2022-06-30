@@ -38,9 +38,10 @@ public class BookController {
 
         model.addAttribute("book", bookService.findById(id));
 
+
+
         Optional<Person> bookOwner = bookService.getPerson(id);
 
-        System.out.println(bookOwner.get().getFullName());
 
         if (bookOwner.isPresent())
             model.addAttribute("owner", bookOwner.get());

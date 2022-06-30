@@ -56,9 +56,16 @@ public class BookService {
     }
 
     @Transactional
-    public Optional<Person> getPerson(int id){
+    public Optional<Person> getPerson(Integer id){
 
-        return peopleRepository.findById(id);
+        if (id == null)
+            return Optional.empty();
+
+        Book book = findById(id);
+
+        Optional<Person> person = Optional.ofNullable(book.getPerson());
+
+        return person;
     }
 
     @Transactional
