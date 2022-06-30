@@ -9,4 +9,5 @@ import java.util.*;
 @Repository
 public interface BooksRepository extends JpaRepository<Book, Integer> {
 
+    Book findByNameContaining(String title);
 }

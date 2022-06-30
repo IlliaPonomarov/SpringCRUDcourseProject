@@ -116,6 +116,10 @@ public class BookService {
 
     }
 
+    public Optional<Book> findByNameContaining(String title){
+        return Optional.ofNullable(booksRepository.findByNameContaining(title));
+    }
+
 
 
 

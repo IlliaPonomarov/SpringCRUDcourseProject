@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,12 +34,10 @@ public class BookController {
 
     @GetMapping()
     public String index(
-                        Model model,
-                        @RequestParam("page") int page,
-                        @RequestParam("books_per_page") int booksPerPage,
-                        @RequestParam("sort_by_year") boolean sortByYear)
-
-    {
+            Model model,
+            @RequestParam("page") int page,
+            @RequestParam("books_per_page") int booksPerPage,
+            @RequestParam("sort_by_year") boolean sortByYear) {
 
         List<Book> books = bookService.findAll(page, booksPerPage, sortByYear);
 
@@ -47,7 +46,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public String bookPage(@PathVariable("id") int id, Model model, @ModelAttribute("person") Person person){
+    public String bookPage(@PathVariable("id") int id, Model model, @ModelAttribute("person") Person person) {
 
         model.addAttribute("book", bookService.findById(id));
 
@@ -61,8 +60,7 @@ public class BookController {
 
             model.addAttribute("owner", bookOwner.get());
 
-        }
-        else
+        } else
             model.addAttribute("people", peopleService.findAll());
 
         return "books/bookPage";
@@ -75,19 +73,19 @@ public class BookController {
     }
 
     @PostMapping("/new")
-    public String createBook(@ModelAttribute("book") @Valid Book book, BindingResult bindingResult){
+    public String createBook(@ModelAttribute("book") @Valid Book book, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors())
             return "/books/new";
 
-         bookService.save(book);
+        bookService.save(book);
 
         return "redirect:/books";
     }
 
 
     @PatchMapping("/{id}/edit-person-id")
-    public String updatePersonId(@PathVariable("id") int id, @ModelAttribute Person person){
+    public String updatePersonId(@PathVariable("id") int id, @ModelAttribute Person person) {
 
         // Установить нового владельца книги
         bookService.setNewOwner(person, id);
@@ -97,7 +95,7 @@ public class BookController {
 
 
     @PatchMapping("/{id}/free")
-    public String free(@PathVariable("id") int id){
+    public String free(@PathVariable("id") int id) {
 
         bookService.free(id);
 
@@ -106,7 +104,7 @@ public class BookController {
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") int id,
-                       Model model){
+                       Model model) {
 
         model.addAttribute("book", bookService.findById(id));
 
@@ -116,8 +114,8 @@ public class BookController {
 
     @PatchMapping("/{id}/edit")
     public String editForm(@PathVariable("id") int id,
-                           @ModelAttribute("book")  @Valid Book book
-    , BindingResult bindingResult){
+                           @ModelAttribute("book") @Valid Book book
+            , BindingResult bindingResult) {
 
         if (bindingResult.hasErrors())
             return "/books/edit";
@@ -129,7 +127,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") int id){
+    public String delete(@PathVariable("id") int id) {
 
         bookService.delete(id);
 
@@ -138,9 +136,26 @@ public class BookController {
 
 
     @GetMapping("/search")
-    public String search(){
+    public String search(@Param("keyword") String keyword, Model model) {
+
+        model.addAttribute("keyword", keyword);
+
 
         return "/books/search";
     }
 
+    @GetMapping("/getResult")
+    public String getSearchResult(@Param("keyword") String keyword, Model model) {
+
+
+        if (!keyword.trim().isEmpty()) {
+            Optional<Book> book = bookService.findByNameContaining(keyword);
+
+            if (book.isPresent())
+                model.addAttribute("book", book.get());
+        }
+
+
+        return "/books/search";
+    }
 }
