@@ -43,7 +43,7 @@ public class PeopleController {
 
         peopleService.save(person);
 
-        return "redirect:/main";
+        return "redirect:/people";
     }
 
     // Get list of all person

@@ -1,25 +1,38 @@
 package ua.ponomarov.Model;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
+@Entity
+@Table(name = "books")
 public class Book {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "book_id")
     private int book_id;
 
 
+    @Column(name = "name")
     @NotEmpty(message = "This field must not be empty")
     private String name;
 
+    @Column(name = "author")
     @NotEmpty(message = "This field must not be empty")
     private String author;
 
+    @Column(name = "year")
     @Positive
     private int year;
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn( name = "person_id",
+            referencedColumnName = "person_id")
+    private Person person;
 
     public Book(){}
 
@@ -62,5 +75,11 @@ public class Book {
         this.year = year;
     }
 
+    public Person getPerson() {
+        return person;
+    }
 
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 }

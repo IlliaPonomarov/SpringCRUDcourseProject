@@ -4,17 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ua.ponomarov.DAO.PersonDAO;
 import ua.ponomarov.Model.Person;
+import ua.ponomarov.Services.PeopleService;
 
 @Component
 public class PersonValidator implements Validator {
 
-    private PersonDAO personDAO;
+    private PeopleService peopleService;
 
     @Autowired
-    public PersonValidator(PersonDAO personDAO) {
-        this.personDAO = personDAO;
+    public PersonValidator(PeopleService peopleService) {
+        this.peopleService = peopleService;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class PersonValidator implements Validator {
 
         Person person = (Person) o;
 
-        if (personDAO.findByFullName(person.getFullName()).isPresent())
+        if (peopleService.findByFullName(person.getFullName()).isPresent())
             errors.rejectValue("fullName", "", "This Person already exist.");
 
     }

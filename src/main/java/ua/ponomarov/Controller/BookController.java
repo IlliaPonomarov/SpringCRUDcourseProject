@@ -6,8 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ua.ponomarov.DAO.BookDAO;
-import ua.ponomarov.DAO.PersonDAO;
 import ua.ponomarov.Model.Book;
 import ua.ponomarov.Model.Person;
 import ua.ponomarov.Services.BookService;
@@ -31,7 +29,7 @@ public class BookController {
 
     @GetMapping()
     public String index(Model model) {
-        model.addAttribute("books", bookService.index());
+        model.addAttribute("books", bookService.findAll());
         return "books/index";
     }
 
@@ -42,13 +40,33 @@ public class BookController {
 
         Optional<Person> bookOwner = bookService.getPerson(id);
 
+        System.out.println(bookOwner.get().getFullName());
+
         if (bookOwner.isPresent())
             model.addAttribute("owner", bookOwner.get());
         else
-            model.addAttribute("people", personDAO.index());
+            model.addAttribute("people", peopleService.findAll());
 
         return "books/bookPage";
     }
+
+    @GetMapping("/new")
+    public String newBook(@ModelAttribute("book") Book book) {
+
+        return "books/new";
+    }
+
+    @PostMapping("/new")
+    public String createBook(@ModelAttribute("book") @Valid Book book, BindingResult bindingResult){
+
+        if (bindingResult.hasErrors())
+            return "/books/new";
+
+         bookService.save(book);
+
+        return "redirect:/books";
+    }
+
 
     @PatchMapping("/{id}/edit-person-id")
     public String updatePersonId(@PathVariable("id") int id, @ModelAttribute Person person){
@@ -87,7 +105,7 @@ public class BookController {
         if (bindingResult.hasErrors())
             return "/books/edit";
 
-        bookService.update(book, id);
+        bookService.update(id, book);
 
 
         return "redirect:/books";
