@@ -6,10 +6,16 @@
 </head>
 <body>
 
-<h1><a th:href="@{/main}">List of People.</a></h1>
+<h1><a th:href="@{/people/}">List of People.</a></h1>
 <br/><hr/>
 <div th:each="person : ${people}">
-    <a th:href="@{/people/{id}(id=${person.getId()})}"><p th:text="${person.getFullName() + ' ' + person.getId()}"></p></a>
+    <a th:href="@{/people/{id}(id=${person.getId()})}"><p th:text="${person.getFullName() + ', ' + person.getYearOfBirth()}"></p></a>
 </div>
+
+<br/>
+<hr/>
+<p><a th:href="@{/people/new}">Create new Person</a></p>
+
+
 </body>
 </html>

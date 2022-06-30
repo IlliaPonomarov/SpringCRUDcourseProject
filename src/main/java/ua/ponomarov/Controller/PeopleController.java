@@ -6,8 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ua.ponomarov.DAO.PersonDAO;
 import ua.ponomarov.Model.Person;
+import ua.ponomarov.Repository.PeopleRepository;
+import ua.ponomarov.Services.PeopleService;
 import ua.ponomarov.util.PersonValidator;
 
 import javax.validation.Valid;
@@ -17,12 +18,12 @@ import javax.validation.Valid;
 public class PeopleController {
 
     private PersonValidator personValidator;
-    private PersonDAO personDAO;
+    private PeopleService peopleService;
 
     @Autowired
-    public PeopleController(PersonDAO personDAO, PersonValidator personValidator) {
-        this.personDAO = personDAO;
+    public PeopleController(PersonValidator personValidator, PeopleService peopleService) {
         this.personValidator = personValidator;
+        this.peopleService = peopleService;
     }
 
     @GetMapping("/new")
@@ -40,16 +41,16 @@ public class PeopleController {
         if (bindingResult.hasErrors())
             return "/people/new";
 
-        personDAO.save(person);
+        peopleService.save(person);
 
         return "redirect:/main";
     }
 
     // Get list of all person
-    @GetMapping("/all")
+    @GetMapping
     public String listOfPeople(Model model){
 
-        model.addAttribute("people", personDAO.index());
+        model.addAttribute("people", peopleService.findAll());
 
         return "/people/allPeople";
     }
@@ -58,29 +59,40 @@ public class PeopleController {
     @GetMapping("/{id}")
     public String personalPageOfPerson(@PathVariable("id") int id, Model model){
 
-        model.addAttribute("person", personDAO.findById(id));
+        model.addAttribute("person", peopleService.findById(id));
+        model.addAttribute("books", peopleService.allBooks(id));
 
         return "/people/personalPageOfPerson";
     }
 
-    // Delete Person
 
-    @GetMapping("/delete")
-    public String deletePerson(Model model, @ModelAttribute("person") Person person){
-        model.addAttribute("people", personDAO.index());
 
-        return "people/deletePerson";
+
+    @DeleteMapping("/{id}")
+    public String removePerson(@PathVariable("id") int id, @ModelAttribute("person") Person person){
+
+        peopleService.delete(person.getId());
+
+        return "redirect:/people/";
     }
 
 
-    @DeleteMapping("/delete")
-    public String removePerson(@ModelAttribute("person") Person person){
 
-        personDAO.delete(person.getId());
-
-        return "redirect:/people/all";
+    @GetMapping("/{id}/edit")
+    public String edit(Model model, @PathVariable("id") int id) {
+        model.addAttribute("person", peopleService.findById(id));
+        return "people/edit";
     }
 
+    @PatchMapping("/{id}")
+    public String update(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult,
+                         @PathVariable("id") int id) {
+        if (bindingResult.hasErrors())
+            return "people/edit";
+
+        peopleService.update(id, person);
+        return "redirect:/people";
+    }
 
 
 

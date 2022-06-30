@@ -1,5 +1,0 @@
-ua\ponomarov\DAO\PersonDAO.class
-ua\ponomarov\Model\Person.class
-ua\ponomarov\Configuration\SpringConfig.class
-ua\ponomarov\Configuration\MySpringDispatcherServletInitializer.class
-ua\ponomarov\Controller\PeopleController.class

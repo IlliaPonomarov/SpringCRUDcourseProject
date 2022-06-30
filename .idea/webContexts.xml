@@ -3,7 +3,9 @@
   <component name="WebContextManager">
     <option name="state">
       <map>
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/books/allBooks.html" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/books" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/people/deletePerson.html" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/people" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/people/personalPageOfPerson.html" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/people" />
       </map>
     </option>
   </component>
