@@ -1,6 +1,10 @@
 package ua.ponomarov.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +34,25 @@ public class BookService {
     public List<Book> findAll(){
         return booksRepository.findAll();
     }
+
+    public List<Book> findAll(int page, int booksPerPage, boolean sort_by_year){
+        Pageable paging = null;
+
+        if (sort_by_year)
+            paging = PageRequest.of(page, booksPerPage, Sort.by("name"));
+        else
+            paging = PageRequest.of(page, booksPerPage);
+
+        Page<Book>  pageResult = booksRepository.findAll(paging);
+
+        if (pageResult.hasContent())
+            return pageResult.getContent();
+
+
+        return null;
+    }
+
+
 
     public Book findById(int id){
 

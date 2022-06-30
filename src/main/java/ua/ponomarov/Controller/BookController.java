@@ -2,6 +2,10 @@ package ua.ponomarov.Controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,7 +14,7 @@ import ua.ponomarov.Model.Book;
 import ua.ponomarov.Model.Person;
 import ua.ponomarov.Services.BookService;
 import ua.ponomarov.Services.PeopleService;
-
+import java.util.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -28,8 +32,15 @@ public class BookController {
     }
 
     @GetMapping()
-    public String index(Model model) {
-        model.addAttribute("books", bookService.findAll());
+    public String index(
+                        Model model,
+                        @RequestParam("page") int page,
+                        @RequestParam("books_per_page") int booksPerPage,
+                        @RequestParam("sort_by_year") boolean sortByYear) {
+
+        List<Book> books = bookService.findAll(page, booksPerPage, sortByYear);
+
+        model.addAttribute("books", books);
         return "books/index";
     }
 
@@ -37,8 +48,6 @@ public class BookController {
     public String bookPage(@PathVariable("id") int id, Model model, @ModelAttribute("person") Person person){
 
         model.addAttribute("book", bookService.findById(id));
-
-
 
         Optional<Person> bookOwner = bookService.getPerson(id);
 
