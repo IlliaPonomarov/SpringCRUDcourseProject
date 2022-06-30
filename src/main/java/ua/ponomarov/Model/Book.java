@@ -5,6 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Entity
 @Table(name = "books")
@@ -28,11 +29,16 @@ public class Book {
     @Positive
     private int year;
 
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn( name = "person_id",
             referencedColumnName = "person_id")
     private Person person;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date_take_of_book")
+    private Date dateTakeOfBook;
+
+
 
     public Book(){}
 
@@ -81,5 +87,13 @@ public class Book {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public Date getDateTakeOfBook() {
+        return dateTakeOfBook;
+    }
+
+    public void setDateTakeOfBook(Date dateTakeOfBook) {
+        this.dateTakeOfBook = dateTakeOfBook;
     }
 }

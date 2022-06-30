@@ -19,7 +19,15 @@
     <b>Books:</b>
     <br/>
     <table th:each="book : ${books}">
-        <tr th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">book</tr>
+
+        <div th:if="${!book.getKey()}">
+            <tr style="color: black" th:text="${book.getValue().getName() + ', ' + book.value.getAuthor() + ', ' + book.getValue().getYear()}">book</tr>
+        </div>
+
+        <div th:if="${book.getKey()}">
+            <tr style="color: red" th:text="${book.getValue().getName() + ', ' + book.value.getAuthor() + ', ' + book.getValue().getYear()}">book</tr>
+        </div>
+
     </table>
     <hr/>
 </div>

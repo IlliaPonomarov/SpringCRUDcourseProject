@@ -13,6 +13,7 @@ import ua.ponomarov.Model.Person;
 import ua.ponomarov.Repository.BooksRepository;
 import ua.ponomarov.Repository.PeopleRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,11 +36,14 @@ public class BookService {
         return booksRepository.findAll();
     }
 
+    // http://localhost:7778/books?page=1&books_per_page=6&sort_by_year=true
+
+
     public List<Book> findAll(int page, int booksPerPage, boolean sort_by_year){
         Pageable paging = null;
 
         if (sort_by_year)
-            paging = PageRequest.of(page, booksPerPage, Sort.by("name"));
+            paging = PageRequest.of(page, booksPerPage, Sort.by("year"));
         else
             paging = PageRequest.of(page, booksPerPage);
 
@@ -47,7 +51,6 @@ public class BookService {
 
         if (pageResult.hasContent())
             return pageResult.getContent();
-
 
         return null;
     }
@@ -95,6 +98,7 @@ public class BookService {
     public void free(int id){
         Book book = findById(id);
         book.setPerson(null);
+
         book.setBook_id(id);
 
         booksRepository.save(book);
@@ -106,8 +110,13 @@ public class BookService {
 
         Book book = findById(id);
         book.setPerson(person);
+        book.setDateTakeOfBook(new Date());
+
         booksRepository.save(book);
 
     }
+
+
+
 
 }

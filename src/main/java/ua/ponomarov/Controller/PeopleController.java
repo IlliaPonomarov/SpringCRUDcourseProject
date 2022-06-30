@@ -6,12 +6,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ua.ponomarov.Model.Book;
 import ua.ponomarov.Model.Person;
 import ua.ponomarov.Repository.PeopleRepository;
 import ua.ponomarov.Services.PeopleService;
 import ua.ponomarov.util.PersonValidator;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/people")
@@ -58,6 +60,9 @@ public class PeopleController {
 
     @GetMapping("/{id}")
     public String personalPageOfPerson(@PathVariable("id") int id, Model model){
+
+        for (Map.Entry<Boolean, Book> book : peopleService.allBooks(id).entrySet())
+            System.out.println(book.getValue().getName() + " " + book.getKey());
 
         model.addAttribute("person", peopleService.findById(id));
         model.addAttribute("books", peopleService.allBooks(id));

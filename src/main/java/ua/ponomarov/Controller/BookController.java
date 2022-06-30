@@ -36,7 +36,9 @@ public class BookController {
                         Model model,
                         @RequestParam("page") int page,
                         @RequestParam("books_per_page") int booksPerPage,
-                        @RequestParam("sort_by_year") boolean sortByYear) {
+                        @RequestParam("sort_by_year") boolean sortByYear)
+
+    {
 
         List<Book> books = bookService.findAll(page, booksPerPage, sortByYear);
 
@@ -51,9 +53,15 @@ public class BookController {
 
         Optional<Person> bookOwner = bookService.getPerson(id);
 
+        // Мы можем взять книгу на 10 дней.
+        // Добавить проверку , что книга была добавлена
 
-        if (bookOwner.isPresent())
+
+        if (bookOwner.isPresent()) {
+
             model.addAttribute("owner", bookOwner.get());
+
+        }
         else
             model.addAttribute("people", peopleService.findAll());
 
@@ -93,7 +101,6 @@ public class BookController {
 
         bookService.free(id);
 
-
         return "redirect:/books";
     }
 
@@ -130,5 +137,10 @@ public class BookController {
     }
 
 
+    @GetMapping("/search")
+    public String search(){
+
+        return "/books/search";
+    }
 
 }
